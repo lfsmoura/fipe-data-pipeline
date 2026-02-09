@@ -1,14 +1,14 @@
 import cliProgress from 'cli-progress';
-import { fipeClient } from '../fipe/client.js';
-import * as repo from '../db/repository.js';
 import { classifySingleModel } from '../classifier/segment-classifier.js';
+import * as repo from '../db/repository.js';
+import { fipeClient } from '../fipe/client.js';
 
 function parseYearValue(value: string): { year: number; fuelCode: number } {
   // Format: "2020-1" (year-fuelCode)
   const [yearStr, fuelCodeStr] = value.split('-');
   return {
-    year: parseInt(yearStr, 10),
-    fuelCode: parseInt(fuelCodeStr, 10),
+    year: Number.parseInt(yearStr, 10),
+    fuelCode: Number.parseInt(fuelCodeStr, 10),
   };
 }
 
@@ -37,7 +37,7 @@ function parseReferenceMonth(mes: string): { month: number; year: number } {
   const [monthName, yearStr] = mes.trim().toLowerCase().split('/');
   return {
     month: months[monthName] || 0,
-    year: parseInt(yearStr, 10),
+    year: Number.parseInt(yearStr, 10),
   };
 }
 
@@ -98,7 +98,7 @@ export async function crawl(options: CrawlOptions = {}): Promise<void> {
     log('  Phase 1: Crawling brands...');
     const apiBrands = await fipeClient.getBrands(ref.Codigo);
     const filteredBrands = options.brandCodes
-      ? apiBrands.filter((b) => options.brandCodes!.includes(b.Value))
+      ? apiBrands.filter((b) => options.brandCodes?.includes(b.Value))
       : apiBrands;
 
     for (const b of filteredBrands) {
@@ -116,7 +116,7 @@ export async function crawl(options: CrawlOptions = {}): Promise<void> {
         try {
           const modelsResponse = await fipeClient.getModels(ref.Codigo, brand.fipeCode);
           const filteredModels = options.modelCodes
-            ? modelsResponse.Modelos.filter((m) => options.modelCodes!.includes(String(m.Value)))
+            ? modelsResponse.Modelos.filter((m) => options.modelCodes?.includes(String(m.Value)))
             : modelsResponse.Modelos;
 
           for (const m of filteredModels) {
@@ -247,6 +247,9 @@ export async function crawl(options: CrawlOptions = {}): Promise<void> {
     await repo.markReferenceCrawled(ref.Codigo);
     log(`  Completed reference ${ref.Codigo}`);
   }
+
+  log('\nRefreshing latest prices view...');
+  await repo.refreshLatestPrices();
 
   const duration = Math.round((Date.now() - startTime) / 1000);
   log(`\nCrawl complete: ${totalPrices} prices in ${duration}s`);

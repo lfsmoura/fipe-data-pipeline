@@ -3,18 +3,15 @@
   "version": "1.11.0",
   "type": "module",
   "scripts": {
-    "crawl": "tsx src/index.ts crawl",
-    "status": "tsx src/index.ts status",
-    "classify": "tsx src/index.ts classify",
+    "crawl": "bun src/index.ts crawl",
+    "status": "bun src/index.ts status",
+    "classify": "bun src/index.ts classify",
     "db:push": "drizzle-kit push",
-    "db:shell": "docker exec -it fipe-postgres psql -U postgres -d fipe",
-    "build": "tsc",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "typecheck": "tsc --noEmit",
-    "prepare": "husky"
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "typecheck": "bunx tsc --noEmit"
   },
   "license": "MIT",
   "description": "Data pipeline for FIPE vehicle pricing data",
@@ -22,24 +19,18 @@
     "@anthropic-ai/sdk": "^0.71.2",
     "cli-progress": "^3.12.0",
     "commander": "^14.0.2",
-    "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
     "postgres": "^3.4.7",
-    "tsx": "^4.21.0",
     "zod": "^4.1.13"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.1",
+    "@biomejs/biome": "^1.9.4",
     "@semantic-release/git": "^10.0.1",
     "@types/cli-progress": "^3.11.6",
     "@types/node": "^24.10.2",
     "drizzle-kit": "^0.31.8",
-    "eslint": "^9.39.1",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.2.7",
-    "prettier": "^3.7.4",
+    "lefthook": "^1.11.5",
     "semantic-release": "^25.0.2",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.49.0"
+    "typescript": "^5.9.3"
   }
 }

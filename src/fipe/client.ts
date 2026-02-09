@@ -1,13 +1,13 @@
 import { env } from '../config.js';
 import {
-  referenceTablesSchema,
   brandsSchema,
-  modelsResponseSchema,
-  yearsSchema,
-  priceSchema,
   fipeErrorSchema,
+  modelsResponseSchema,
+  priceSchema,
+  referenceTablesSchema,
+  yearsSchema,
 } from './schemas.js';
-import type { ReferenceTable, Brand, ModelsResponse, Year, Price, PriceParams } from './types.js';
+import type { Brand, ModelsResponse, Price, PriceParams, ReferenceTable, Year } from './types.js';
 
 const BASE_URL = 'https://veiculos.fipe.org.br/api/veiculos';
 const VEHICLE_TYPE_CAR = 1;
@@ -34,7 +34,7 @@ export class FipeClient {
     // For 429s, use longer base delay (5s, 10s, 20s, 40s...)
     // For other errors, use standard delay (1s, 2s, 4s, 8s...)
     const baseDelay = is429 ? 5000 : 1000;
-    return baseDelay * Math.pow(2, attempt);
+    return baseDelay * 2 ** attempt;
   }
 
   private increaseThrottle(): void {
@@ -86,7 +86,7 @@ export class FipeClient {
         // Check for Retry-After header
         const retryAfter = response.headers.get('Retry-After');
         const waitTime = retryAfter
-          ? parseInt(retryAfter, 10) * 1000
+          ? Number.parseInt(retryAfter, 10) * 1000
           : this.calculateBackoff(attempt, true);
 
         if (retries > 0) {

@@ -1,8 +1,7 @@
-FROM node:22-alpine
-RUN corepack enable && corepack prepare pnpm@latest --activate
+FROM oven/bun:alpine
 WORKDIR /app
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --prod --ignore-scripts
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile --production
 COPY src ./src
 COPY tsconfig.json ./
 CMD ["tail", "-f", "/dev/null"]

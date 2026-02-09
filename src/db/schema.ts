@@ -1,12 +1,12 @@
 import {
+  decimal,
+  index,
+  integer,
   pgTable,
   serial,
-  integer,
-  varchar,
-  decimal,
   timestamp,
   unique,
-  index,
+  varchar,
 } from 'drizzle-orm/pg-core';
 
 export const referenceTables = pgTable(

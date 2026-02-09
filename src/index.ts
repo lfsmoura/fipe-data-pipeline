@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import { crawl, status } from './crawler/processor.js';
 import { classifyModels } from './classifier/segment-classifier.js';
-import { getModelsWithoutSegment, updateModelSegment } from './db/repository.js';
+import { crawl, status } from './crawler/processor.js';
 import { closeConnection } from './db/connection.js';
+import { getModelsWithoutSegment, updateModelSegment } from './db/repository.js';
 
 const program = new Command();
 
@@ -15,12 +15,12 @@ function parseNumberList(value: string): number[] {
   const results: number[] = [];
   for (const part of value.split(',')) {
     if (part.includes('-')) {
-      const [start, end] = part.split('-').map((v) => parseInt(v.trim(), 10));
+      const [start, end] = part.split('-').map((v) => Number.parseInt(v.trim(), 10));
       for (let i = start; i <= end; i++) {
         results.push(i);
       }
     } else {
-      results.push(parseInt(part.trim(), 10));
+      results.push(Number.parseInt(part.trim(), 10));
     }
   }
   return [...new Set(results)].sort((a, b) => a - b);
@@ -50,7 +50,7 @@ program
   .action(async (options) => {
     try {
       await crawl({
-        referenceCode: options.reference ? parseInt(options.reference, 10) : undefined,
+        referenceCode: options.reference ? Number.parseInt(options.reference, 10) : undefined,
         years: options.year ? parseNumberList(options.year) : undefined,
         months: options.month ? parseNumberList(options.month) : undefined,
         brandCodes: options.brand ? parseCommaSeparated(options.brand) : undefined,

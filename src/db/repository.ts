@@ -1,15 +1,15 @@
-import { eq, and, isNull, inArray } from 'drizzle-orm';
+import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 import { db } from './connection.js';
 import {
-  referenceTables,
+  type Segment,
   brands,
-  models,
   modelYears,
+  models,
   prices,
   referenceBrands,
-  referenceModels,
   referenceModelYears,
-  type Segment,
+  referenceModels,
+  referenceTables,
 } from './schema.js';
 
 // Reference Tables
@@ -363,4 +363,8 @@ export async function markReferenceModelYearsPriceCrawledBatch(ids: number[]) {
     .update(referenceModelYears)
     .set({ priceCrawledAt: new Date() })
     .where(inArray(referenceModelYears.id, ids));
+}
+
+export async function refreshLatestPrices() {
+  await db.execute(sql`REFRESH MATERIALIZED VIEW CONCURRENTLY latest_prices`);
 }

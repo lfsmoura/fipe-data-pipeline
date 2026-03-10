@@ -248,8 +248,10 @@ export async function crawl(options: CrawlOptions = {}): Promise<void> {
     log(`  Completed reference ${ref.Codigo}`);
   }
 
-  log('\nRefreshing latest prices view...');
-  await repo.refreshLatestPrices();
+  if (totalPrices > 0) {
+    log('\nRefreshing latest prices view...');
+    await repo.refreshLatestPrices();
+  }
 
   const duration = Math.round((Date.now() - startTime) / 1000);
   log(`\nCrawl complete: ${totalPrices} prices in ${duration}s`);
